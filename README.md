@@ -1,32 +1,3 @@
-# vg_demographics
-Exploring vg demographics and related data.
-
-# data targets
-* game names
-* game features: year, platform, playtime, genre, developer
-* game protagonists: type, flexibility of choice, race, sex
-* economic success
-* critical success
-* funding
-
-# data sources
-* playtime: http://howlongtobeat.com/
-* games, reviews, systems: http://www.metacritic.com/
-* games, systems, more: http://www.uvlist.net/
-* user list of all games: http://pastebin.com/u/data_baser'
-* list of game lists: https://en.wikipedia.org/wiki/Lists_of_video_games
-* list of games: http://www.mobygames.com/browse/games
-* another game wiki: http://gaming.wikia.com/wiki/Encyclopedia_Gamia
-* sales data: http://vgsales.wikia.com/wiki/NPD_sales_data
-* investment data: might have to do this with mechanical Turk... maybe give 
-    links to wiki pages and asking folks to scrape... need to investigate the 
-    above sources in detail...
-* global sales in millions units: http://www.vgchartz.com/gamedb/
-
-# to do
-* review Evernote and Chrome for additional sources
-* review all located sources: features covered, access strategies
-
 # Video Game Protagonist Demographics
 This document provides a summary of project goals, intended products, and 
 relevant supporting information. 
@@ -52,65 +23,64 @@ and reproducible.
 
 ## Project Goal
 We want to provide real numbers and insights to inform conversations around
-who is and is not well represented in video games.
+who is and is not well represented as the primary playable characters in video 
+games.
 
 If possible, we also want to test claims we have anecdotally encountered
 suggesting that certain protagonist features (e.g, race and gender) lack
 diversity because they are associated with critical and economic success.
 
 ## Audience Definition
+Project data and write-ups will be tailored to a broad audience interested
+in data and video games. Data should be accessible in a broadly accessible
+format (e.g., CSV or Excel files) and at least some blog posts should be
+non-technical.
+
 Project code will be tailored towards analysis-savvy people who are
 comfortable with (or willing to learn) R.
 
-Project data and write-ups will be tailored to a broad audience interested
-in data and video games.
-
 ## Key Tasks Product Will Support for Target Audience(s)
-*Only really useful when the project is product focused. In this case, you need 
-to specify the most important one to five tasks the product will support. The 
-product should be designed around these tasks and product testing should test 
-the target audience ability to complete these tasks. Do not try to design a 
-single product for more than five tasks - more tasks than this suggests you 
-either need multiple products or you need to develop and test your product in 
-phases.*
+Our broader audience should be able to:
+* Understand the premise of the study
+* Observe broad trends and key takeaways
+* Obtain the data in a non-specialized format
 
-Wombats should be able to:
-* Learn about the wombat welfare process - where it begins and keys stages
-participants proceed through.
-* Get a rough sense of how many wombats are involved at different stages
-of the wombat welfare process.
-* Determine how many wombats are currently in out-of-hole care.
-* Determine common outcomes for out-of-hole care.
-* Assess how out-of-hole placement and outcomes have changed over time 
-(current should allow for coverage of the last 12 years).
+Analytically-minded folks should be able to:
+* Access our finalized data as a built-in dataframe (or set of dataframes) in
+    the same R package
+* Access our code for gathering and cleaning data in the same R package
+* Reproduce any analyses we complete or visualizations we produce either via
+    documented R package functions or via clearly presented code in blog posts
 
 ## Deliverables
-*List of the concrete components that satisfy the objective.*
-
-1. Standardized application structure and documentation
-2. Necessary database updating/organizing complete
-3. Data creation/flow complete and update schedule set
-4. Integration of app into POC's current data tool collection.
-5. Transition to advertising, testing, revision.
+1. R code for gathering and cleaning data (R package)
+2. Finalized data in multiple formats (R package, CSV, Excel)
+3. R code for analyses and visualizations (R package and/or blog posts)
+4. Non-technical summary of demographics via blog post (R markdown)
+5. Non-technical summary of other key observations via blog post (R markdown)
+6. At least one technical dive into analysing critical/economic success, 
+    prepared as a well-structured R markdown file and knitted into a blog post
 
 ## Technical Requirements
-*Limitations on how the objective can be satisfied.*
-
-Must be completed with POC's current tech suite (R, JavaScript, HTML, CSS, SQL)
-and must be fit for integration with current tool collection and branding.
+All scraping and analysis should be completed in R or be executed by functions 
+in the planned R package.
 
 ## Milestones
-*Major steps in the process with soft/hard deadlines.*
-
-* April 1: Stakeholder agreement on project scope (objective, goal, etc.).
-* April 15: Mock-ups and tech strategy complete.
-* April 30: Prototype implemented. Stakeholder review.
+* Identify data targets, broad and narrow
+* Identify data sources and match them to targets
+* Shell and name for R package
+* Plan and code strategies for gathering data
+* Plan and code data cleaning
+* EDA
+* Plan and code demographics analysis and visualizations
+* Prepare demographics blog post - non-technical but code available
+* Plan and code any follow-up analyses, including success work
+* Prepare technical version of follow-up post(s)
+* Prepare non-technical version with key takeaways
+* Finalize R package and documentation on GitHub
 
 ## Limits and Exclusions
-*Often times a project is part of a broader collection of projects or implies
-features tasks that are not part of the current objective. Here is where such
-confusions can be clarified.*
-
-This project does not include advertising or full-scale usability testing in
-its scope. These will likely need to be tackled after the project given
-available resources/personnel.
+Demographics work is the key focus. If success exploration is too difficult, it
+will be shelved until the demographics work is completed (or dropped entirely).
+At the moment, it appears that investment and sales data will likely be tricky
+to access.
