@@ -32,9 +32,9 @@ diversity because they are associated with critical and economic success.
 
 ## Audience Definition
 Project data and write-ups will be tailored to a broad audience interested
-in data and video games. Data should be accessible in a broadly accessible
-format (e.g., CSV or Excel files) and at least some blog posts should be
-non-technical.
+in video game protagonist demographics. Data will be made available in 
+a broadly accessible format (e.g., CSV or Excel files) and at least some blog 
+posts will be non-technical.
 
 Project code will be tailored towards analysis-savvy people who are
 comfortable with (or willing to learn) R.
@@ -42,7 +42,7 @@ comfortable with (or willing to learn) R.
 ## Key Tasks Product Will Support for Target Audience(s)
 Our broader audience should be able to:
 * Understand the premise of the study
-* Observe broad trends and key takeaways
+* Observe broad trends and key takeaways (e.g., % male, % white, etc.)
 * Obtain the data in a non-specialized format
 
 Analytically-minded folks should be able to:
