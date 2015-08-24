@@ -21,9 +21,11 @@ write-ups.
 ## Data Sources
 * playtime: http://howlongtobeat.com/
 * games, reviews, systems: http://www.metacritic.com/
+  - possible metacritic API: https://www.mashape.com/byroredux/metacritic
 * games, systems, more: http://www.uvlist.net/
 * user list of all games: http://pastebin.com/u/data_baser'
 * list of game lists: https://en.wikipedia.org/wiki/Lists_of_video_games
+* wikidata VG info: https://www.wikidata.org/wiki/Wikidata:WikiProject_Video_games
 * list of games: http://www.mobygames.com/browse/games
 * another game wiki: http://gaming.wikia.com/wiki/Encyclopedia_Gamia
 * sales data: http://vgsales.wikia.com/wiki/NPD_sales_data
@@ -31,3 +33,4 @@ write-ups.
     links to wiki pages and asking folks to scrape... need to investigate the 
     above sources in detail...
 * global sales in millions units: http://www.vgchartz.com/gamedb/
+* more charts, possibly redundant: http://www.the-magicbox.com/charts.htm
