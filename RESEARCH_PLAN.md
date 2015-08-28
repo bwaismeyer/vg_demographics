@@ -34,3 +34,4 @@ write-ups.
     above sources in detail...
 * global sales in millions units: http://www.vgchartz.com/gamedb/
 * more charts, possibly redundant: http://www.the-magicbox.com/charts.htm
+* **steam spy API**, has titles, ratings, scores (steam and metacritic), number owners, and more in one easy to call place... however it's data is always only 2 weeks old so attrition may impact results and Steam (or at least the available data) only goes back to 2009 and obviously data is platform/store limited... still, maybe an ideal place to do an initial sample: http://steamspy.com/api.php
