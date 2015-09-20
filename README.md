@@ -8,9 +8,9 @@ relevant supporting information.
 ## Project Motives
 We have heard and read much about the (lack of) diversity in video game
 protagonists. This made us curious about what the actual numbers would be
-if did an actual demographic breakdown of protagonist demographics. 
+if we attempted a wide-scale breakdown of protagonist demographics. 
 
-Secondary to this interest, we were also curious to see if there were any
+Secondary to this interest, we are also curious to see if there are any
 relationships between protagonist characteristics, game development investment, 
 and game critical and economic success.
 
