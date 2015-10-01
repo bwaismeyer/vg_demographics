@@ -1,3 +1,5 @@
+library(dplyr)
+library(tidyr)
 library(jsonlite)
 steamspy_data <- fromJSON("http://steamspy.com/api.php?request=all")
 sp_df <- do.call(rbind, lapply(steamspy_data, as.data.frame, stringsAsFactors = FALSE))
@@ -87,3 +89,115 @@ raw_app_data <- get_all_apps(app_name_df$appid)
 
 save(raw_app_data, file = "raw_app_data.rda")
 
+# key targets in the raw app data
+# data$type
+# data$name
+# data$steam_appid
+# data$required_age
+# data$is_free
+# data$detailed_description
+# data$about_the_game
+# data$website
+# data$developers
+# data$publishers
+# data$price_overview$currency
+# data$price_overview$initial
+# data$price_overview$final
+# data$platforms$windwos
+# data$platforms$mac
+# data$platforms$linux
+# data$metacritic$score
+# data$metacritic$url
+# data$categories (df: id, description)
+# data$genres (df: id, description)
+# data$recommendations$total
+# data$achievements$total
+# data$release_date$date
+list_to_df <- function(target) {
+    values <- list(
+        "type" = target[["type"]],
+        "name" = target[["name"]],
+        "steam_appid" = target[["steam_appid"]],
+        "required_age" = target[["required_age"]],
+        "is_free" = target[["is_free"]],
+        "detailed_description" = target[["detailed_description"]],
+        "about_the_game" = target[["about_the_game"]],
+        "website" = target[["website"]],
+        "developers" = paste(target[["developers"]], 
+                             collapse = "---"),
+        "publishers" = paste(target[["publishers"]],
+                             collapse = "---"),
+        "price_currency" = target[["price_overview"]][["currency"]],
+        "price_initial" = target[["price_overview"]][["initial"]],
+        "price_final" = target[["price_overview"]][["final"]],
+        "platform_windows" = target[["platforms"]][["windows"]],
+        "platform_mac" = target[["platforms"]][["mac"]],
+        "platform_linux" = target[["platforms"]][["linux"]],
+        "metacritic_score" = target[["metacritic"]][["score"]],
+        "metacritic_url" =  target[["metacritic"]][["url"]],
+        "recommendations" = target[["recommendations"]][["total"]],
+        "achievements" = target[["achievements"]][["total"]],
+        "release_date" = target[["release_date"]][["date"]],
+        "categories" = paste(target[["categories"]][["description"]],
+                             collapse = "---"),
+        "genres" = paste(target[["genres"]][["description"]],
+                         collapse = "---")
+    )
+    
+    values <- data.frame(do.call(cbind, values), stringsAsFactors = FALSE)
+    
+    return(values)
+}
+
+raw_to_df <- function(raw_app_data) {
+    df_collection <- lapply(raw_app_data, function(x) list_to_df(x$data))
+    df <- dplyr::rbind_all(df_collection)
+    
+    return(df)
+}
+
+big_test <- raw_to_df(raw_app_data)
+head(sort(table(big_test$genres), decreasing = TRUE), 20)
+
+# a few of our variables are complex, representing multiple values together
+# (e.g., Action---Indie); we want to unpack these variables so that we can
+# look at the combination or the single values
+
+# BRIAN - clean up big_test to something less annoying... make this all one
+# chain... expanding all appropriate... then reflatten by making wide with
+# T/F cols...
+
+lg <- head(big_test)
+separate(lg, cateogires, sep = "---")
+
+cats <- big_test %>%
+    transform(categories = strsplit(categories, "---")) %>%
+    unnest(categories)
+
+gens <- cats %>%
+    transform(genres = strsplit(genres, "---")) %>%
+    unnest(genres)
+
+# try recursive function?
+# - check if more nodes past current node...
+# - if yes, make vector of lists...
+# - for each node in vector...
+# - check if more nodes past current node...
+
+# - when arrive where no more nodes, check if single or mult
+#   values at current node...
+# - if single, grab and return to most recent node-vector to continue
+#   diving... save in list and name after path_to_node...
+# - if multiple, concat, grab, and return to most recent node-vector to
+#   continue diving...
+
+# - continue until no more node vectors
+
+# - values to df
+
+# - observe all collections and get all unique names...
+# - fill in all collections with missing unique names...
+# - order collections to match...
+# - rbind collections to common df
+
+# - return common df
