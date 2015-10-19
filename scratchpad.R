@@ -1,6 +1,8 @@
 library(dplyr)
 library(tidyr)
 library(jsonlite)
+library(stringr)
+
 steamspy_data <- fromJSON("http://steamspy.com/api.php?request=all")
 sp_df <- do.call(rbind, lapply(steamspy_data, as.data.frame, stringsAsFactors = FALSE))
 
@@ -89,6 +91,9 @@ raw_app_data <- get_all_apps(app_name_df$appid)
 
 save(raw_app_data, file = "raw_app_data.rda")
 
+# reload as needed
+load("raw_app_data.rda")
+
 # key targets in the raw app data
 # data$type
 # data$name
@@ -156,18 +161,52 @@ raw_to_df <- function(raw_app_data) {
     return(df)
 }
 
-big_test <- raw_to_df(raw_app_data)
-head(sort(table(big_test$genres), decreasing = TRUE), 20)
+app_df <- raw_to_df(raw_app_data)
+
+# example code for grabbing basic features
+head(sort(table(app_df$genres), decreasing = TRUE), 20)
 
 # a few of our variables are complex, representing multiple values together
 # (e.g., Action---Indie); we want to unpack these variables so that we can
 # look at the combination or the single values
 
+# we'll do this by identifying all of the unique types that can occur for 
+# these variables and creating flags for each... then we'll set the flags
+# appropriately for each game
+
+# we could assume that all the unique types occur alone at least once and so
+# just grab the unique values without our separator (--) from the current
+# data... but it is unclear if this assumption is merited or not (e.g., perhaps
+# "Indie" never occurs alone)... alternatively, we could split all the values
+# in a column, gather these into a single vector, and then use that as our
+# list of flags...
+
+# a function that will read down a column, splitting each value as it goes
+split_column <- function(column, split_by) {
+    collected_splits <- c()
+    for(i in 1:length(column)) {
+        current_value <- column[i]
+        value_vector <- unlist(str_split(current_value, split_by))
+        
+        collected_splits <- c(collected_splits, value_vector)
+    }
+    
+    return(collected_splits)
+}
+
+# complex cols: developers, publishers, categories, genres
+cols_to_split <- c("developers", "publishers", "categories", "genres")
+
+# I AM HERE - NEED TO MAKE SURE GAME IDS ARE ASSOCIATED WITH THE SPLITS AND
+# THEN NEED TO JOIN THE SOURCE DATA TO THIS TO GET THE LONG DF
+
+
+
 # BRIAN - clean up big_test to something less annoying... make this all one
 # chain... expanding all appropriate... then reflatten by making wide with
 # T/F cols...
 
-lg <- head(big_test)
+lg <- head(app_df)
 separate(lg, cateogires, sep = "---")
 
 cats <- big_test %>%
@@ -177,27 +216,3 @@ cats <- big_test %>%
 gens <- cats %>%
     transform(genres = strsplit(genres, "---")) %>%
     unnest(genres)
-
-# try recursive function?
-# - check if more nodes past current node...
-# - if yes, make vector of lists...
-# - for each node in vector...
-# - check if more nodes past current node...
-
-# - when arrive where no more nodes, check if single or mult
-#   values at current node...
-# - if single, grab and return to most recent node-vector to continue
-#   diving... save in list and name after path_to_node...
-# - if multiple, concat, grab, and return to most recent node-vector to
-#   continue diving...
-
-# - continue until no more node vectors
-
-# - values to df
-
-# - observe all collections and get all unique names...
-# - fill in all collections with missing unique names...
-# - order collections to match...
-# - rbind collections to common df
-
-# - return common df
