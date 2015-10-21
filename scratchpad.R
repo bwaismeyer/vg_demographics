@@ -181,14 +181,35 @@ head(sort(table(app_df$genres), decreasing = TRUE), 20)
 # in a column, gather these into a single vector, and then use that as our
 # list of flags...
 
-# a function that will read down a column, splitting each value as it goes
-split_column <- function(column, split_by) {
+# a function that will read down a column, splitting each value as it goes but
+# pairing it with its app id
+split_column <- function(column, split_by, id_col = NULL) {
     collected_splits <- c()
-    for(i in 1:length(column)) {
-        current_value <- column[i]
-        value_vector <- unlist(str_split(current_value, split_by))
+    
+    if(is.null(id_col)) {
+        for(i in 1:length(column)) {
+            current_value <- column[i]
+            value_vector <- unlist(str_split(current_value, split_by))
+            
+            collected_splits <- c(collected_splits, value_vector)
+        }
+    } else {
+        collected_ids <- c()
         
-        collected_splits <- c(collected_splits, value_vector)
+        for(i in 1:length(column)) {
+            current_value <- column[i]
+            value_vector <- unlist(str_split(current_value, split_by))
+            
+            collected_splits <- c(collected_splits, value_vector)
+            
+            current_id <- id_col[i]
+            id_vector <- rep(current_id, length(value_vector))
+            
+            collected_ids <- c(collected_ids, id_vector)
+        }
+        
+        collected_splits <- data.frame(collected_ids, collected_splits,
+                                       stringsAsFactors = FALSE)
     }
     
     return(collected_splits)
@@ -197,22 +218,75 @@ split_column <- function(column, split_by) {
 # complex cols: developers, publishers, categories, genres
 cols_to_split <- c("developers", "publishers", "categories", "genres")
 
-# I AM HERE - NEED TO MAKE SURE GAME IDS ARE ASSOCIATED WITH THE SPLITS AND
-# THEN NEED TO JOIN THE SOURCE DATA TO THIS TO GET THE LONG DF
+# I AM HERE:
+# cols_to_split seems to work... but there is something wrong with the
+# functions creating app_df... they are creating repeat records (e.g., 
+# steam_appid == 80) in the end data frame - which means some records are
+# getting missed and some are getting double counted
 
+# TO TRY:
+# no custom list... just keep unlisting until you hit values and paste the
+# names on the way down together... apply paste to all... then can 
+# test later to see which cols need splitting...
 
+# NOT unlist... for each, test... if typeof == list, then for each, test...
+# if typeof != list, then paste all values (sep = "---") and pass the result
+# out with the name of the path to the current item
+extract_values <- function(nested_list, collapse_string = "---") {
+    browser()
+    # define vector
+    value_bucket <- c()
+    # grab item names
+    item_names <- names(nested_list)
+    # loop over each item in the raw_app list
+    for(i in 1:length(nested_list)) {
+        current_item <- nested_list[[i]]
+        current_name <- item_names[[i]]
+        # test if list... if not, grab the values and pass it to the
+        # collection object, named after the current item
+        if(typeof(current_item) != "list") {
+            values <- paste(current_item, collapse = collapse_string)
+            value_bucket <- c(value_bucket, current_name = values)
+        } else {
+            # if list, then loop over the elements of each list recursively, 
+            # passing out values when reached
+            values <- extract_values(current_item)
+            value_bucket <- c(value_bucket, values)
+        }
+    }
+    
+    # return the values extracted from the nested list - really the values
+    # passed from the current nested list mode or the final product of
+    # hybrid of grabs from direct nodes or recursive calls to the extract
+    # function
+    return(value_bucket)
+}
 
-# BRIAN - clean up big_test to something less annoying... make this all one
-# chain... expanding all appropriate... then reflatten by making wide with
-# T/F cols...
+## IF LIST IS 0, PASS NULL AND WALK AWAY BECAUSE IT'S FUCKED UP
 
-lg <- head(app_df)
-separate(lg, cateogires, sep = "---")
+test <- list()
+for(i in 1:length(cols_to_split)) {
+    current_var <- cols_to_split[[i]]
+    current_col <- app_df[[current_var]]
+    id_col <- app_df$steam_appid
+    
+    current_split <- split_column(current_col, "---", id_col)
+    names(current_split) <- c("steam_appid", paste0("split_", current_var))
+    
+    test[current_var] <- list(current_split)
+}
 
-cats <- big_test %>%
-    transform(categories = strsplit(categories, "---")) %>%
-    unnest(categories)
+join_test <- app_df %>%
+    left_join(test$developers) %>%
+    left_join(test$publishers) %>%
+    left_join(test$categories) %>%
+    left_join(test$genres)
 
-gens <- cats %>%
-    transform(genres = strsplit(genres, "---")) %>%
-    unnest(genres)
+app_df %>%
+    filter(steam_appid == 80) %>%
+    data.frame()
+
+join_test %>%
+    filter(steam_appid == 80) %>%
+    data.frame() %>%
+    select(steam_appid, split_publishers, split_developers, split_categories, split_genres)
