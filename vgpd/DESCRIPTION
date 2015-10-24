@@ -1,0 +1,26 @@
+Package: vgpd
+Title: Video Game Protagonist Demographics EDA
+Version: 0.0.0.9000
+Authors@R: as.person(c(
+    "Brian Waismeyer <bwaismeyer@gmail.com> [aut, cre]"
+))
+Description: This package contains data and functions to support exploratory
+    analysis of the characteristics of video game protagonists. The data are
+    not exhaustive nor should they be assumed to be representative of video
+    games in general. The game titles and non-character details were largely
+    extracted from the Steam API and so are limited to the platforms served by
+    Steam (PC/Mac/Linux) and are shaped by Valve's business objectives and
+    probably many other factors. Please see the package README and associated
+    package vignettes for details on how the data were constructed and
+    suggested data uses and limitations.
+URL: https://github.com/bwaismeyer/vg_demographics
+BugReports: https://github.com/bwaismeyer/vg_demographics/issues
+Depends:
+    R (>= 3.2.2)
+Imports:
+    dplyr,
+    tidyr,
+    stringr,
+    jsonlite
+LazyData: true
+License: GNU General Public License v3.0

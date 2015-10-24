@@ -1,3 +1,5 @@
+# code style link: http://r-pkgs.had.co.nz/r.html#style
+
 library(dplyr)
 library(tidyr)
 library(jsonlite)
@@ -46,7 +48,7 @@ get_app <- function(appid) {
     app_detail_call <- paste0("http://store.steampowered.com/api/appdetails/?appids=",
                               appid)
     call_result <- fromJSON(app_detail_call)
-    
+
     return(call_result)
 }
 
@@ -54,35 +56,35 @@ get_all_apps <- function(appids, start_delay = 240) {
     total_ids <- length(appids)
     current_delay <- start_delay
     app_list <- list()
-    
+
     for(i in 1:total_ids) {
         call_result <- try(get_app(appids[i]))
-        
+
         call_fail <- typeof(call_result) != "list"
         if(call_fail) {
             message("Delay required...")
             added_secs <- 0
             Sys.sleep(current_delay)
-            
+
             call_result <- try(get_app(appids[i]))
             call_fail <- typeof(call_result) != "list"
-            
+
             while(call_fail) {
                 Sys.sleep(1)
                 added_secs <- added_secs + 1
-            
+
                 call_result <- try(get_app(appids[i]))
                 call_fail <- typeof(call_result) != "list"
             }
-            
+
             current_delay <- current_delay + added_secs
             message(paste0("Target delay seconds = ", current_delay))
         }
-        
+
         app_list[names(call_result)] <- call_result
         message(paste0(i, " of ", total_ids))
     }
-    
+
     message("Final delay seconds = ", current_delay)
     return(app_list)
 }
@@ -128,7 +130,7 @@ list_to_df <- function(target) {
         "detailed_description" = target[["detailed_description"]],
         "about_the_game" = target[["about_the_game"]],
         "website" = target[["website"]],
-        "developers" = paste(target[["developers"]], 
+        "developers" = paste(target[["developers"]],
                              collapse = "---"),
         "publishers" = paste(target[["publishers"]],
                              collapse = "---"),
@@ -148,16 +150,16 @@ list_to_df <- function(target) {
         "genres" = paste(target[["genres"]][["description"]],
                          collapse = "---")
     )
-    
+
     values <- data.frame(do.call(cbind, values), stringsAsFactors = FALSE)
-    
+
     return(values)
 }
 
 raw_to_df <- function(raw_app_data) {
     df_collection <- lapply(raw_app_data, function(x) list_to_df(x$data))
     df <- dplyr::rbind_all(df_collection)
-    
+
     return(df)
 }
 
@@ -170,7 +172,7 @@ head(sort(table(app_df$genres), decreasing = TRUE), 20)
 # (e.g., Action---Indie); we want to unpack these variables so that we can
 # look at the combination or the single values
 
-# we'll do this by identifying all of the unique types that can occur for 
+# we'll do this by identifying all of the unique types that can occur for
 # these variables and creating flags for each... then we'll set the flags
 # appropriately for each game
 
@@ -185,33 +187,33 @@ head(sort(table(app_df$genres), decreasing = TRUE), 20)
 # pairing it with its app id
 split_column <- function(column, split_by, id_col = NULL) {
     collected_splits <- c()
-    
+
     if(is.null(id_col)) {
         for(i in 1:length(column)) {
             current_value <- column[i]
             value_vector <- unlist(str_split(current_value, split_by))
-            
+
             collected_splits <- c(collected_splits, value_vector)
         }
     } else {
         collected_ids <- c()
-        
+
         for(i in 1:length(column)) {
             current_value <- column[i]
             value_vector <- unlist(str_split(current_value, split_by))
-            
+
             collected_splits <- c(collected_splits, value_vector)
-            
+
             current_id <- id_col[i]
             id_vector <- rep(current_id, length(value_vector))
-            
+
             collected_ids <- c(collected_ids, id_vector)
         }
-        
+
         collected_splits <- data.frame(collected_ids, collected_splits,
                                        stringsAsFactors = FALSE)
     }
-    
+
     return(collected_splits)
 }
 
@@ -220,13 +222,13 @@ cols_to_split <- c("developers", "publishers", "categories", "genres")
 
 # I AM HERE:
 # cols_to_split seems to work... but there is something wrong with the
-# functions creating app_df... they are creating repeat records (e.g., 
+# functions creating app_df... they are creating repeat records (e.g.,
 # steam_appid == 80) in the end data frame - which means some records are
 # getting missed and some are getting double counted
 
 # TO TRY:
 # no custom list... just keep unlisting until you hit values and paste the
-# names on the way down together... apply paste to all... then can 
+# names on the way down together... apply paste to all... then can
 # test later to see which cols need splitting...
 
 # NOT unlist... for each, test... if typeof == list, then for each, test...
@@ -248,13 +250,13 @@ extract_values <- function(nested_list, collapse_string = "---") {
             values <- paste(current_item, collapse = collapse_string)
             value_bucket <- c(value_bucket, current_name = values)
         } else {
-            # if list, then loop over the elements of each list recursively, 
+            # if list, then loop over the elements of each list recursively,
             # passing out values when reached
             values <- extract_values(current_item)
             value_bucket <- c(value_bucket, values)
         }
     }
-    
+
     # return the values extracted from the nested list - really the values
     # passed from the current nested list mode or the final product of
     # hybrid of grabs from direct nodes or recursive calls to the extract
@@ -269,10 +271,10 @@ for(i in 1:length(cols_to_split)) {
     current_var <- cols_to_split[[i]]
     current_col <- app_df[[current_var]]
     id_col <- app_df$steam_appid
-    
+
     current_split <- split_column(current_col, "---", id_col)
     names(current_split) <- c("steam_appid", paste0("split_", current_var))
-    
+
     test[current_var] <- list(current_split)
 }
 
