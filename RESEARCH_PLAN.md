@@ -102,3 +102,7 @@ This fails to cover:
 * game features: playtime, platform (can assume PC but won't know all consoles)
 * game protagonists: type, flexibility of choice, race, sex
 * funding
+
+## Resources
+
+* http://stereotropes.bocoup.com/
