@@ -9,50 +9,70 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+This document is a record of how the data included with the \code{vgpd} package 
+was produced (and how it can be updated). It will point you - the reader -  to
+all necessary package code, demonstrate its use, and describe the results you
+should expect.
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+The objective of this code is to create a dataset of video games and their
+protagonists.
 
-## Vignette Info
+This dataset is created by pulling together several sources of data:
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+* [Steam API]():
+* [Steam Spy API]():
+* [protagonist data]():
+* ...
 
-## Styles
+## Warning: You Probably Don't Want to Run This Code
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+Little of the code in this vignette was run when the vignette was produced.
+You'll see that much of the code was commented out and this was intentional.
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+Some of the data collection - especially the data extracted from the Steam API -
+is extremely time intensive. To save you time and get you into the data more
+quickly, the major building blocks and final drafts of the \code{vgpd} datasets
+have been included in this package.
 
-## Figures
+This document will use these in-built data objects to illustrate the results
+of the data gathering and cleaning code. When you are ready to work with the
+data, you are encouraged to use the provided data either as-is or as a
+foundation for updates.
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
+## Supporting Packages
 
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+All supporting packages should have been installed along with the \code{vgpd}
+package. 
+
+```{r load_packages}
+# If you haven't already, you should install the vgpd package. The simplest
+# way to do this is with devtools.
+
+# NOT RUN
+# devtools::install_github("bwaismeyer/vg_demographics", subdir = "vpgd")
+
+# Once installed, vgpd should include all the resources needed to create,
+# load, or update the package data.
+library(vgpd)
+
+# We'll also load some additional packages to support the demonstrations in
+# this vignette.
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(jsonlite)
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+## Step 1: The Steam API
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r load_package_data}
+# We load the in-built package data to illustrate what the Steam API code
+# should produce and to illustrate how we go from the early raw download
+# to a clean dataframe.
+data("raw_app_data")
 ```
 
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```{r process_raw_data}
+# Next we process the raw data into an intermediate dataframe.
+# I AM HERE REBUILDING THIS STEP FROM SCRATCH.
+```

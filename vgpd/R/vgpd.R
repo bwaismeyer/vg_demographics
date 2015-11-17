@@ -1,7 +1,7 @@
 #' vgpd: Data and functions for exploring video game protagonist demographics.
 #'
-#' The vgpd package contains a sample dataset of video game and video game
-#' protagonist, functions for reproducing and interacting with the sample
+#' The vgpd package contains a sample dataset of video games and their
+#' protagonists, functions for reproducing and interacting with the sample
 #' dataset, and documentation discussing the work done by the package authors
 #' to produce and use the data.
 #'

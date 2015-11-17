@@ -120,47 +120,116 @@ load("raw_app_data.rda")
 # data$recommendations$total
 # data$achievements$total
 # data$release_date$date
-list_to_df <- function(target) {
-    values <- list(
-        "type" = target[["type"]],
-        "name" = target[["name"]],
-        "steam_appid" = target[["steam_appid"]],
-        "required_age" = target[["required_age"]],
-        "is_free" = target[["is_free"]],
-        "detailed_description" = target[["detailed_description"]],
-        "about_the_game" = target[["about_the_game"]],
-        "website" = target[["website"]],
-        "developers" = paste(target[["developers"]],
-                             collapse = "---"),
-        "publishers" = paste(target[["publishers"]],
-                             collapse = "---"),
-        "price_currency" = target[["price_overview"]][["currency"]],
-        "price_initial" = target[["price_overview"]][["initial"]],
-        "price_final" = target[["price_overview"]][["final"]],
-        "platform_windows" = target[["platforms"]][["windows"]],
-        "platform_mac" = target[["platforms"]][["mac"]],
-        "platform_linux" = target[["platforms"]][["linux"]],
-        "metacritic_score" = target[["metacritic"]][["score"]],
-        "metacritic_url" =  target[["metacritic"]][["url"]],
-        "recommendations" = target[["recommendations"]][["total"]],
-        "achievements" = target[["achievements"]][["total"]],
-        "release_date" = target[["release_date"]][["date"]],
-        "categories" = paste(target[["categories"]][["description"]],
-                             collapse = "---"),
-        "genres" = paste(target[["genres"]][["description"]],
-                         collapse = "---")
-    )
+list_to_df <- function(app_list) {
+    current_id <- names(app_list)
+    contents <- app_list[[current_id]]
 
-    values <- data.frame(do.call(cbind, values), stringsAsFactors = FALSE)
+    if("data" %in% names(contents)) {
+        target <- contents$data
+
+        values <- list(
+            "type" = target[["type"]],
+            "name" = target[["name"]],
+            "steam_appid" = target[["steam_appid"]],
+            "required_age" = target[["required_age"]],
+            "is_free" = target[["is_free"]],
+            "detailed_description" = target[["detailed_description"]],
+            "about_the_game" = target[["about_the_game"]],
+            "website" = target[["website"]],
+            "developers" = paste(target[["developers"]],
+                                 collapse = "---"),
+            "publishers" = paste(target[["publishers"]],
+                                 collapse = "---"),
+            "price_currency" = target[["price_overview"]][["currency"]],
+            "price_initial" = target[["price_overview"]][["initial"]],
+            "price_final" = target[["price_overview"]][["final"]],
+            "platform_windows" = target[["platforms"]][["windows"]],
+            "platform_mac" = target[["platforms"]][["mac"]],
+            "platform_linux" = target[["platforms"]][["linux"]],
+            "metacritic_score" = target[["metacritic"]][["score"]],
+            "metacritic_url" =  target[["metacritic"]][["url"]],
+            "recommendations" = target[["recommendations"]][["total"]],
+            "achievements" = target[["achievements"]][["total"]],
+            "release_date" = target[["release_date"]][["date"]],
+            "categories" = paste(target[["categories"]][["description"]],
+                                 collapse = "---"),
+            "genres" = paste(target[["genres"]][["description"]],
+                             collapse = "---")
+        )
+
+        values <- data.frame(do.call(cbind, values), stringsAsFactors = FALSE)
+    } else {
+        values <- data.frame("steamapp_id" = current_id)
+    }
 
     return(values)
 }
 
 raw_to_df <- function(raw_app_data) {
-    df_collection <- lapply(raw_app_data, function(x) list_to_df(x$data))
+    df_collection <- list()
+
+    for(i in 1:length(raw_app_data)) {
+        current_id <- names(raw_app_data)[i]
+        df_collection[current_id] <- list(list_to_df[i])
+    }
+
     df <- dplyr::rbind_all(df_collection)
 
     return(df)
+}
+
+list_to_df <- function(target) {
+
+        values <- list(
+            "type" = target[["type"]],
+            "name" = target[["name"]],
+            "steam_appid" = target[["steam_appid"]],
+            "required_age" = target[["required_age"]],
+            "is_free" = target[["is_free"]],
+            "detailed_description" = target[["detailed_description"]],
+            "about_the_game" = target[["about_the_game"]],
+            "website" = target[["website"]],
+            "developers" = paste(target[["developers"]],
+                                 collapse = "---"),
+            "publishers" = paste(target[["publishers"]],
+                                 collapse = "---"),
+            "price_currency" = target[["price_overview"]][["currency"]],
+            "price_initial" = target[["price_overview"]][["initial"]],
+            "price_final" = target[["price_overview"]][["final"]],
+            "platform_windows" = target[["platforms"]][["windows"]],
+            "platform_mac" = target[["platforms"]][["mac"]],
+            "platform_linux" = target[["platforms"]][["linux"]],
+            "metacritic_score" = target[["metacritic"]][["score"]],
+            "metacritic_url" =  target[["metacritic"]][["url"]],
+            "recommendations" = target[["recommendations"]][["total"]],
+            "achievements" = target[["achievements"]][["total"]],
+            "release_date" = target[["release_date"]][["date"]],
+            "categories" = paste(target[["categories"]][["description"]],
+                                 collapse = "---"),
+            "genres" = paste(target[["genres"]][["description"]],
+                             collapse = "---")
+        )
+
+        values <- data.frame(do.call(cbind, values), stringsAsFactors = FALSE)
+
+    return(values)
+}
+
+raw_to_df <- function(raw_app_data) {
+
+    df_collection <- lapply(raw_app_data, function(x) list_to_df(x$data))
+
+    lapply(seq_along(df_collection), function(i) {
+        if("steamapp_id" %in% names(df_collection[[i]])) {
+            return(df_collection[i])
+        } else {
+            return(data.frame("steam_appid" = names(df_collection)[i]))
+        }
+    })
+
+    #df <- dplyr::rbind_all(df_collection)
+
+    return(df_collection)
 }
 
 app_df <- raw_to_df(raw_app_data)
@@ -287,6 +356,14 @@ join_test <- app_df %>%
 app_df %>%
     filter(steam_appid == 80) %>%
     data.frame()
+
+app_df %>%
+    group_by(steam_appid) %>%
+    summarise(count = n()) %>%
+    filter(count > 1) %>%
+    data.frame()
+
+names(raw_app_data)[!(names(raw_app_data) %in% app_df$steam_appid)]
 
 join_test %>%
     filter(steam_appid == 80) %>%
