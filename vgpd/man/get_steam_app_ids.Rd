@@ -28,5 +28,6 @@ data now available on the API.
 # grab the IDs and names for all apps currently listed on the Steam API
 current_apps <- get_steam_app_ids()
 }
+
 }
 

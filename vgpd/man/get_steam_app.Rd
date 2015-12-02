@@ -31,5 +31,6 @@ current_apps <- get_steam_app_ids()
 # grab the data for one of the apps
 single_app <- get_steam_app(current_apps[500])
 }
+
 }
 

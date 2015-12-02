@@ -63,16 +63,45 @@ library(stringr)
 library(jsonlite)
 ```
 
-## Step 1: The Steam API
+## Step 1: Creating the `steam_app_list`
 
 ```{r load_package_data}
 # We load the in-built package data to illustrate what the Steam API code
 # should produce and to illustrate how we go from the early raw download
 # to a clean dataframe.
-data("raw_app_data")
+data("steam_app_list")
 ```
 
 ```{r process_raw_data}
 # Next we process the raw data into an intermediate dataframe.
-# I AM HERE REBUILDING THIS STEP FROM SCRATCH.
+raw_df <- flatten_lists_to_df(steam_app_list)
+```
+
+```{r clean_raw_df}
+# Next we examine the resulting dataframe. It has a lot of variables so we avoid
+# print-heavy functions (e.g., str, summary).
+dim(raw_df)
+head(names(raw_df))
+
+# We inspect the dataframe for missing values.
+raw_df %>%
+    apply(2, function(x) {sum(is.na(x))}) %>%
+    sort() %>%
+    head(20)
+
+# We see immediately a high number of missing values for everything but 
+# success. This makes more sense when we look at the distribution for success.
+table(raw_df$success)
+
+# App queries that returned success == FALSE are dummy records. It's unclear why
+# they exist (perhaps old Steam apps?), but they can be discarded as useless
+# for our purposes as they have no data at all.
+rs_df <- raw_df %>%
+    filter(success == "TRUE")
+
+# We check our missing values again.    
+rs_df %>%
+    apply(2, function(x) {sum(is.na(x))}) %>%
+    sort() %>%
+    head(20)
 ```

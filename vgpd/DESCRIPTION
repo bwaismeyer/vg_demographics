@@ -19,7 +19,9 @@ Imports:
     dplyr,
     tidyr,
     stringr,
-    jsonlite
+    jsonlite,
+    RSQLite,
+    sqldf
 LazyData: true
 License: GNU General Public License v3.0
 RoxygenNote: 5.0.1

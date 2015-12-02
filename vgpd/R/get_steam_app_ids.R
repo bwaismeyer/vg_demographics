@@ -19,6 +19,8 @@
 #' # grab the IDs and names for all apps currently listed on the Steam API
 #' current_apps <- get_steam_app_ids()
 #' }
+#'
+#' @export
 get_steam_app_ids <- function() {
     # define the query that needs to be passed to the Steam API
     app_id_query <- "http://api.steampowered.com/ISteamApps/GetAppList/v2"

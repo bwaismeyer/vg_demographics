@@ -21,6 +21,8 @@
 #' # grab the data for one of the apps
 #' single_app <- get_steam_app(current_apps[500])
 #' }
+#'
+#' @export
 get_steam_app <- function(appid) {
     # if the input isn't character, convert it
     if(!is.character(appid)) {

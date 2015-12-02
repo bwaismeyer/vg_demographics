@@ -51,6 +51,8 @@
 #' # starting point
 #' raw_app_data <- get_steam_apps(current_apps$appid)
 #' }
+#'
+#' @export
 get_steam_apps <- function(appids, start_delay = 240) {
     # determine how many times the function will have to loop
     total_ids <- length(appids)

@@ -8,22 +8,6 @@ library(stringr)
 steamspy_data <- fromJSON("http://steamspy.com/api.php?request=all")
 sp_df <- do.call(rbind, lapply(steamspy_data, as.data.frame, stringsAsFactors = FALSE))
 
-steam_app_names <- fromJSON("http://api.steampowered.com/ISteamApps/GetAppList/v2")
-app_name_df <- do.call(rbind, lapply(steam_app_names, as.data.frame, stringsAsFactors = FALSE))
-names(app_name_df) <- c("appid", "name")
-
-ant <- paste0(head(app_name_df$appid), collapse = ",")
-adc <- paste0("http://store.steampowered.com/api/appdetails/?appids=",
-              ant)
-ad1 <- paste0("http://store.steampowered.com/api/appdetails/?appids=",
-              "570")
-
-app_name_csv <- paste0(app_name_df$appid, collapse = ",")
-app_detail_call <- paste0("http://store.steampowered.com/api/appdetails/?appids=",
-                          app_name_csv)
-
-test <- fromJSON(ad1)
-
 # get vector and/or df of all app names
 steam_app_names <- fromJSON("http://api.steampowered.com/ISteamApps/GetAppList/v2")
 app_name_df <- do.call(rbind, lapply(steam_app_names, as.data.frame, stringsAsFactors = FALSE))

@@ -63,5 +63,6 @@ current_apps <- get_steam_app_ids()
 # starting point
 raw_app_data <- get_steam_apps(current_apps$appid)
 }
+
 }
 
