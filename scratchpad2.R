@@ -51,3 +51,6 @@ test2 %>%
     filter(count > 1)
 
 btest <- flatten_lists_to_df(steam_app_list)
+blist <- break_long_df(btest, "path")
+
+# I AM HERE: Now need to consolidate to a collection of tables of interest.
